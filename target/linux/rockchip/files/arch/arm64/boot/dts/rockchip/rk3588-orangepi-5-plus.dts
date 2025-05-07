@@ -1012,13 +1012,3 @@
 	dr_mode = "host";
 	status = "okay";
 };
-
-&rknpu {
-    rknpu-supply = <&vdd_npu_s0>;
-    mem-supply = <&vdd_npu_mem_s0>;
-    status = "okay";
-};
-
-&rknpu_mmu {
-    status = "okay";
-};
