@@ -77,11 +77,12 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&blue_led_pin>;
 
-		led_blue_gpio: led {
+		blue_led: led {
 			color = <LED_COLOR_ID_BLUE>;
 			function = LED_FUNCTION_INDICATOR;
 			function-enumerator = <1>;
 			gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "heartbeat";
 		};
 	};
 
@@ -96,7 +97,7 @@
 	pwm-leds {
 		compatible = "pwm-leds";
 
-		led_green_pwm: led {
+		green_led: led {
 			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_INDICATOR;
 			function-enumerator = <2>;
@@ -158,7 +159,7 @@
 		};
 	};
 
-	vcc3v3_pcie30: regulator-vcc3v3-pcie30 {
+	vcc3v3_pcie30: vcc3v3-pcie30-regulator {
 		compatible = "regulator-fixed";
 		enable-active-high;
 		gpios = <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
@@ -169,17 +170,17 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
-	vcc3v3_pcie_eth: regulator-vcc3v3-pcie-eth {
+	vcc3v3_pcie_eth: vcc3v3-pcie-eth-regulator {
 		compatible = "regulator-fixed";
 		gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_LOW>;
 		regulator-name = "vcc3v3_pcie_eth";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		startup-delay-us = <50000>;
-		vin-supply = <&vcc_3v3_s3>;
+		vin-supply = <&vcc5v0_sys>;
 	};
 
-	vcc3v3_wf: regulator-vcc3v3-wf {
+	vcc3v3_wf: vcc3v3-wf-regulator {
 		compatible = "regulator-fixed";
 		enable-active-high;
 		gpios = <&gpio2 RK_PC5 GPIO_ACTIVE_HIGH>;
@@ -190,7 +191,7 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
-	vcc5v0_sys: regulator-vcc5v0-sys {
+	vcc5v0_sys: vcc5v0-sys-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc5v0_sys";
 		regulator-always-on;
@@ -199,7 +200,7 @@
 		regulator-max-microvolt = <5000000>;
 	};
 
-	vcc5v0_usb20: regulator-vcc5v0-usb20 {
+	vcc5v0_usb20: vcc5v0-usb20-regulator {
 		compatible = "regulator-fixed";
 		enable-active-high;
 		gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_HIGH>;
@@ -211,7 +212,7 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
-	vbus5v0_typec: regulator-vbus-typec {
+	vbus5v0_typec: vbus-typec-regulator {
 		compatible = "regulator-fixed";
 		enable-active-high;
 		gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
@@ -282,6 +283,7 @@
 		compatible = "rockchip,rk8602";
 		reg = <0x42>;
 		fcs,suspend-voltage-selector = <1>;
+		regulator-compatible = "rk860x-reg";
 		regulator-name = "vdd_cpu_big0_s0";
 		regulator-always-on;
 		regulator-boot-on;
@@ -299,6 +301,7 @@
 		compatible = "rockchip,rk8603", "rockchip,rk8602";
 		reg = <0x43>;
 		fcs,suspend-voltage-selector = <1>;
+		regulator-compatible = "rk860x-reg";
 		regulator-name = "vdd_cpu_big1_s0";
 		regulator-always-on;
 		regulator-boot-on;
@@ -311,6 +314,30 @@
 			regulator-off-in-suspend;
 		};
 	};
+};
+
+&i2c1 {
+    pinctrl-names = "default";
+    pinctrl-0 = <&i2c1m2_xfer>;
+    status = "okay";
+
+    vdd_npu_s0: vdd_npu_mem_s0: rk8602@42 {
+        compatible = "rockchip,rk8602";
+        reg = <0x42>;
+        fcs,suspend-voltage-selector = <1>;
+        regulator-compatible = "rk860x-reg";
+        regulator-name = "vdd_npu_s0";
+        regulator-always-on;
+        regulator-boot-on;
+        regulator-min-microvolt = <550000>;
+        regulator-max-microvolt = <950000>;
+        regulator-ramp-delay = <2300>;
+        vin-supply = <&vcc5v0_sys>;
+
+        regulator-state-mem {
+            regulator-off-in-suspend;
+        };
+    };
 };
 
 &i2c6 {
@@ -389,6 +416,7 @@
 		compatible = "everest,es8388", "everest,es8328";
 		reg = <0x11>;
 		clocks = <&cru I2S0_8CH_MCLKOUT>;
+		clock-names = "mclk";
 		AVDD-supply = <&vcc_3v3_s0>;
 		DVDD-supply = <&vcc_1v8_s0>;
 		HPVDD-supply = <&vcc_3v3_s0>;
@@ -465,7 +493,7 @@
 	};
 
 	leds {
-		blue_led_pin: blue-led {
+		blue_led_pin: blue-led-pin {
 			rockchip,pins = <3 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
@@ -519,6 +547,7 @@
 	bus-width = <8>;
 	no-sdio;
 	no-sd;
+	supports-emmc;
 	non-removable;
 	max-frequency = <200000000>;
 	mmc-hs400-1_8v;
@@ -950,7 +979,14 @@
 };
 
 &usb_host0_xhci {
+	usb-role-switch;
 	status = "okay";
+
+	port {
+		usb_host0_xhci_drd_sw: endpoint {
+			remote-endpoint = <&usbc0_hs>;
+		};
+	};
 };
 
 &usb_host1_ehci {
@@ -984,16 +1020,6 @@
 		usbdp_phy0_typec_sbu: endpoint@1 {
 			reg = <1>;
 			remote-endpoint = <&usbc0_sbu>;
-		};
-	};
-};
-
-&usb_host0_xhci {
-	usb-role-switch;
-
-	port {
-		usb_host0_xhci_drd_sw: endpoint {
-			remote-endpoint = <&usbc0_hs>;
 		};
 	};
 };
