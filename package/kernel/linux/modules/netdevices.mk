@@ -425,8 +425,8 @@ define KernelPackage/phy-realtek
    KCONFIG:=CONFIG_REALTEK_PHY \
     CONFIG_REALTEK_PHY_HWMON=y
    DEPENDS:=+kmod-libphy +kmod-hwmon-core
-   FILES:=$(LINUX_DIR)/drivers/net/phy/realtek.ko@lt6.12 \
-	  $(LINUX_DIR)/drivers/net/phy/realtek/realtek.ko@ge6.12
+   FILES:=$(LINUX_DIR)/drivers/net/phy/realtek.ko@lt6.6 \
+	  $(LINUX_DIR)/drivers/net/phy/realtek/realtek.ko@ge6.6
    AUTOLOAD:=$(call AutoLoad,18,realtek,1)
 endef
 
@@ -595,6 +595,7 @@ define KernelPackage/dsa-rtl8366rb
   DEPENDS:=+kmod-dsa-realtek @!TARGET_x86 @!TARGET_bcm47xx @!TARGET_uml
   KCONFIG:= \
 	CONFIG_NET_DSA_REALTEK_RTL8366RB \
+	CONFIG_NET_DSA_REALTEK_RTL8366RB_LEDS=y \
 	CONFIG_NET_DSA_TAG_RTL4_A
   FILES:= \
 	$(LINUX_DIR)/drivers/net/dsa/realtek/rtl8366.ko \
@@ -1933,6 +1934,27 @@ endef
 $(eval $(call KernelPackage,sfc-falcon))
 
 
+define KernelPackage/sfc-siena
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Solarflare SFN5000/6000 'Siena' based card support
+  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-lib-crc32c +kmod-i2c-algo-bit +kmod-ptp +kmod-hwmon-core
+  KCONFIG:= \
+	CONFIG_SFC_SIENA \
+	CONFIG_SFC_SIENA_MTD=y \
+	CONFIG_SFC_SIENA_MCDI_MON=y \
+	CONFIG_SFC_SIENA_MCDI_LOGGING=y \
+	CONFIG_SFC_SIENA_SRIOV=y
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/sfc/siena/sfc-siena.ko
+  AUTOLOAD:=$(call AutoProbe,sfc-siena)
+endef
+
+define KernelPackage/sfc-siena/description
+  Solarflare SFN5000/6000 'Siena' based card support
+endef
+
+$(eval $(call KernelPackage,sfc-siena))
+
+
 define KernelPackage/pcs-xpcs
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Synopsis DesignWare PCS driver
@@ -1966,7 +1988,7 @@ $(eval $(call KernelPackage,stmmac-core))
 define KernelPackage/wwan
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=WWAN Driver Core
-  DEPENDS:=@(LINUX_5_15||LINUX_6_1||LINUX_6_6||LINUX_6_12)
+  DEPENDS:=@!(LINUX_5_4||LINUX_5_10)
   KCONFIG:= \
   CONFIG_WWAN \
   CONFIG_WWAN_DEBUGFS=y@ge5.17
@@ -2080,7 +2102,7 @@ define KernelPackage/lan743x
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Microchip LAN743x PCI Express Gigabit Ethernet NIC
   DEPENDS:=@PCI_SUPPORT +kmod-ptp \
-	+!LINUX_5_4:kmod-mdio-devres +(LINUX_6_6||LINUX_6_12):kmod-fixed-phy
+	+!LINUX_5_4:kmod-mdio-devres +(LINUX_6_6||LINUX_6_12):kmod-fixed-phy +LINUX_6_12:kmod-phylink
   KCONFIG:=CONFIG_LAN743X
   FILES:=$(LINUX_DIR)/drivers/net/ethernet/microchip/lan743x.ko
   AUTOLOAD:=$(call AutoProbe,lan743x)

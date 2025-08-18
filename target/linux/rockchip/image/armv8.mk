@@ -24,7 +24,7 @@ TARGET_DEVICES += ariaboard_photonicat
 
 define Device/ariaboard_photonicat2
   DEVICE_VENDOR := Ariaboard
-  DEVICE_MODEL := Photonicat2
+  DEVICE_MODEL := Photonicat 2
   SOC := rk3576
   DEVICE_DTS := rockchip/rk3576-photonicat2
   UBOOT_DEVICE_NAME := evb-rk3576
@@ -155,6 +155,17 @@ define Device/friendlyarm_nanopc-t6
 endef
 TARGET_DEVICES += friendlyarm_nanopc-t6
 
+define Device/friendlyarm_nanopi-m5
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi M5
+  SOC := rk3576
+  DEVICE_DTS := rockchip/rk3576-nanopi-m5
+  UBOOT_DEVICE_NAME := evb-rk3576
+  DEVICE_PACKAGES := kmod-gpio-button-hotplug
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script rk3576 | pine64-img | gzip | append-metadata
+endef
+TARGET_DEVICES += friendlyarm_nanopi-m5
+
 define Device/friendlyarm_nanopi-neo3
   DEVICE_VENDOR := FriendlyARM
   DEVICE_MODEL := NanoPi NEO3
@@ -274,6 +285,17 @@ define Device/friendlyarm_nanopi-r6s
 endef
 TARGET_DEVICES += friendlyarm_nanopi-r6s
 
+define Device/friendlyarm_nanopi-r76s
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R76S
+  SOC := rk3576
+  DEVICE_DTS := rockchip/rk3576-nanopi-r76s
+  UBOOT_DEVICE_NAME := evb-rk3576
+  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script rk3576 | pine64-img | gzip | append-metadata
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r76s
+
 define Device/firefly_station-p2
   DEVICE_VENDOR := Firefly
   DEVICE_MODEL := Station P2
@@ -364,6 +386,16 @@ define Device/mmbox_anas3035
 endef
 TARGET_DEVICES += mmbox_anas3035
 
+define Device/nlnet_xiguapi-v3
+  DEVICE_VENDOR := NLnet
+  DEVICE_MODEL := XiGuaPi V3
+  SOC := rk3568
+  UBOOT_DEVICE_NAME := generic-rk3568
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan
+endef
+TARGET_DEVICES += nlnet_xiguapi-v3
+
 define Device/panther_x2
   DEVICE_VENDOR := Panther
   DEVICE_MODEL := X2
@@ -413,6 +445,15 @@ define Device/radxa_rock-3a
 endef
 TARGET_DEVICES += radxa_rock-3a
 
+define Device/radxa_rock-3b
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 3B
+  SOC := rk3568
+  UBOOT_DEVICE_NAME := rock-3b-rk3568
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
+endef
+TARGET_DEVICES += radxa_rock-3b
+
 define Device/radxa_rock-3c
   DEVICE_VENDOR := Radxa
   DEVICE_MODEL := ROCK 3C
@@ -452,16 +493,6 @@ define Device/radxa_rock-5b
 endef
 TARGET_DEVICES += radxa_rock-5b
 
-define Device/rongpin_king3399
-  DEVICE_VENDOR := Rongpin
-  DEVICE_MODEL := King3399
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := king3399-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8168 kmod-brcmfmac cypress-firmware-4356-sdio wpad-openssl
-endef
-TARGET_DEVICES += rongpin_king3399
-
 define Device/rocktech_mpc1903
   DEVICE_VENDOR := Rocktech
   DEVICE_MODEL := MPC1903
@@ -471,6 +502,16 @@ define Device/rocktech_mpc1903
   DEVICE_PACKAGES := kmod-usb-net-smsc75xx kmod-usb-serial-cp210x
 endef
 TARGET_DEVICES += rocktech_mpc1903
+
+define Device/rongpin_king3399
+  DEVICE_VENDOR := Rongpin
+  DEVICE_MODEL := King3399
+  SOC := rk3399
+  UBOOT_DEVICE_NAME := king3399-rk3399
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
+  DEVICE_PACKAGES := kmod-r8168 kmod-brcmfmac cypress-firmware-4356-sdio wpad-openssl
+endef
+TARGET_DEVICES += rongpin_king3399
 
 define Device/rumu3f_fine-3399
   DEVICE_VENDOR := RUMU3F

@@ -5,10 +5,10 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
-PKG_VERSION:=2025.07-rc1
+PKG_VERSION:=2025.07
 PKG_RELEASE:=1
 
-PKG_HASH:=a9335ae3e71dd53e3c4698bd1afffce44938e52832f95becb2fcce9bf3383263
+PKG_HASH:=0f933f6c5a426895bf306e93e6ac53c60870e4b54cda56d95211bec99e63bec7
 
 PKG_MAINTAINER:=Tobias Maedel <openwrt@tbspace.de>
 
@@ -209,7 +209,8 @@ define U-Boot/radxa-e20c-rk3528
   $(U-Boot/rk3528/Default)
   NAME:=Radxa E20C
   BUILD_DEVICES:= \
-    radxa_e20c
+    radxa_e20c \
+    radxa_e24c
 endef
 
 # RK3566 boards
@@ -284,6 +285,7 @@ define U-Boot/generic-rk3568
     hinlink_opc-h68k \
     hinlink_opc-h69k \
     lyt_t68m \
+    nlnet_xiguapi-v3 \
     seewo_sv21
 endef
 
@@ -356,7 +358,8 @@ define U-Boot/generic-rk3588
   $(U-Boot/rk3588/Default)
   NAME:=Generic RK3588
   BUILD_DEVICES:= \
-    hinlink_owl-h88k \
+    radxa_e52c \
+    radxa_e54c \
     seewo_srcm3588-io \
     seewo_srcm3588-sw
 endef
